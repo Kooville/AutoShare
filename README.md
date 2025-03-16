@@ -7,6 +7,7 @@
     - Ilmoitukseen voi lisätä kuvia.
     - Ilmoitukseen voi lisätä vapaamuotoisen kuvauksen kohteesta.
 - Käyttäjä pystyy varaamaan ajoneuvon käyttöönsä vapaana aikana.
+    - Pystyy myös perumaan varauksen jolloin ajoneuvo vapautuu taas käyttöön
     - Ilmoituksia voidaan hakea ajan, koon, hinnan tai sijainnin perusteella.
 - Sovelluksessa on käyttäjäsivut joista näkee käyttäjän ilmoitukset, sekä varausten määrän.
     - Lisäksi mahdollisesti arvostelut
