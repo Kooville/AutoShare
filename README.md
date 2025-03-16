@@ -1,6 +1,6 @@
 # AutoShare
 
-# Sovelluksen toiminnot
+## Sovelluksen toiminnot
 - Käyttäjä pystyy luomaan tunnuksen ja kirjautumaan sovellukseen.
 - Käyttäjä pystyy ilmoittamaan oman autonsa käytettäväksi.
     - Ilmoitukseen kerrotaan vapaat ajat, ajoneuvon koko, hinta sekä sijainti.
