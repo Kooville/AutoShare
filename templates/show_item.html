@@ -7,9 +7,16 @@
 
 <body>
   <h1>{{  item.makeandmodel  }}</h1>
+  {% if session.user_id == item.user_id %}
+  <p>
+    <a href="/edit_item/{{  item.id  }}">Muokkaa</a>
+    <a href="/remove_item/{{  item.id  }}">Poista</a>
+  </p>
+  {% endif %}
   <li>Ajoneuvon tyyppi: {{ item.type  }}</li>
   <li>Hinta: {{ item.price  }} €/päivä</li>
   <li>Sijainti: {{ item.location  }}</li>
+  <li>Vapaana: {{  item.availability  }}</li>
   <li>Ilmoittaja: {{ item.username  }}</li>
   <p>
     Kuvaus: <br />

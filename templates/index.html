@@ -7,7 +7,6 @@
 
 <body>
   <h1>AutoShare</h1>
-  <p>Tähän tulee etusivu</p>
   {% if session.username %}
   <p>
     Olet kirjautunut nimellä {{ session.username }}, id numerosi on {{ session.user_id }}
@@ -26,7 +25,7 @@
   {%endif%}
 
   <h2>Ilmoitukset</h2>
-
+  <a href="/find_item">Hae ilmoituksia</a>
   <ul>
     {% for item in items %}
     <li>
