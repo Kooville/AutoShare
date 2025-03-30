@@ -11,3 +11,10 @@
     - Ilmoituksia voidaan hakea ajan, koon, hinnan tai sijainnin perusteella.
 - Sovelluksessa on käyttäjäsivut joista näkee käyttäjän ilmoitukset, sekä varausten määrän.
     - Lisäksi mahdollisesti arvostelut
+ 
+## Sovelluksen tämänhetkinen tila
+- Käyttäjä pystyy luomaan tunnuksen ja kirjautumaan sovellukseen
+- Käyttäjä pystyy ilmoittamaan oman autonsa käytettäväksi.
+    - Ilmoitukseen lisätään ajoneuvon tiedot, tyyppi, sijainti, hinta ja vapaamuotoinen kuvaus
+- Käyttäjä pystyy poistamaan ja muokkaamaan ilmoituksiaan.
+- Sovelluksessa voi hakea kohteita merkin, mallin, sijainnin, tyypin, hinnan ja kuvauksen perusteella.
