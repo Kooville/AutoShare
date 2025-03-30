@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Uusi ilmoitus</title>
+</head>
+
+<body>
+  <h1>Uusi ilmoitus</h1>
+  <form action="/create_item" method="post">
+    <p>
+      Ajoneuvon merkki ja malli: <br />
+      <input type="text" name="make_and_model" />
+    </p>
+    <p>
+      <label for="type">Valitse tyyppi:</label> <br />
+
+      <select name="type" id="type">
+        <option value="Henkilöauto">Henkilöauto</option>
+        <option value="Pakettiauto">Pakettiauto</option>
+        <option value="Kuorma-auto">Kuorma-auto</option>
+      </select>
+    </p>
+    <p>
+      Sijainti: <br />
+      <input type="text" name="location" size="5" />
+    </p>
+    <p>
+      Vapaat ajat: <br />
+      <input type="text" name="available" />
+    </p>
+    <p>
+      Hinta: <br />
+      <input type="text" name="price" size="5" /> €/päivä
+    </p>
+    <p>
+      Lisätietoja: <br />
+      <textarea name="description" rows="8" cols="60">Kerro tähän vapaasti lisätietoja ajoneuvosta ja ehdoistasi</textarea>
+    </p>
+    <input type="submit" value="Luo ilmoitus" />
+  </form>
+</body>
+
+</html>
