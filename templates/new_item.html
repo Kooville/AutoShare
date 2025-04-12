@@ -10,12 +10,12 @@
   <form action="/create_item" method="post">
     <p>
       Ajoneuvon merkki ja malli: <br />
-      <input type="text" name="make_and_model" />
+      <input type="text" name="make_and_model" required/>
     </p>
     <p>
       <label for="type">Valitse tyyppi:</label> <br />
 
-      <select name="type" id="type">
+      <select name="type" id="type" required>
         <option value="Henkilöauto">Henkilöauto</option>
         <option value="Pakettiauto">Pakettiauto</option>
         <option value="Kuorma-auto">Kuorma-auto</option>
@@ -31,7 +31,7 @@
     </p>
     <p>
       Hinta: <br />
-      <input type="text" name="price" size="5" /> €/päivä
+      <input type="text" name="price" size="5" required/> €/päivä
     </p>
     <p>
       Lisätietoja: <br />
