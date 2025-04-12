@@ -5,6 +5,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 import db
 import config
 import items
+import re
 
 app = Flask(__name__)
 app.secret_key = config.secret_key
@@ -38,10 +39,14 @@ def new_item():
 @app.route("/create_item", methods=["POST"])
 def create_item():
     makeandmodel = request.form["make_and_model"]
+    if len(makeandmodel) > 50:
+        abort(403)
     type = request.form["type"]
     location = request.form["location"]
     availability = request.form["available"]
     price = request.form["price"]
+    if not re.search("^[1-9][0-9]{0,4}$", price):
+        abort(403)
     description = request.form["description"]
     user_id = session["user_id"]
 
@@ -67,10 +72,14 @@ def update_item():
     if item["user_id"] != session["user_id"]:
         abort(403)
     makeandmodel = request.form["make_and_model"]
+    if len(makeandmodel) > 50:
+        abort(403)
     type = request.form["type"]
     location = request.form["location"]
     availability = request.form["available"]
     price = request.form["price"]
+    if not re.search("^[1-9][0-9]{0,4}$", price):
+        abort(403)
     description = request.form["description"]
 
     items.update_item(item_id, makeandmodel, type, location, availability, price, description)

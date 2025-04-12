@@ -10,7 +10,7 @@
   <form action="/update_item" method="post">
     <p>
       Ajoneuvon merkki ja malli: <br />
-      <input type="text" name="make_and_model" value="{{  item.makeandmodel  }}" required/>
+      <input type="text" name="make_and_model" value="{{  item.makeandmodel  }}" maxlength="50" required/>
     </p>
     <p>
       <label for="type">Valitse tyyppi:</label> <br />
@@ -31,7 +31,7 @@
     </p>
     <p>
       Hinta: <br />
-      <input type="text" name="price" value="{{  item.price  }}" size="5" required/> €/päivä
+      <input type="text" name="price" value="{{  item.price  }}" size="5" pattern="[1-9][0-9]{0,4}" required/> €/päivä
     </p>
     <p>
       Lisätietoja: <br />
