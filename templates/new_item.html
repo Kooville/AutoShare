@@ -12,28 +12,17 @@
       Ajoneuvon merkki ja malli: <br />
       <input type="text" name="make_and_model" maxlength="50" required/>
     </p>
+    {% for class in classes %}
     <p>
-      <label for="type">Valitse tyyppi:</label> <br />
-
-      <select name="type" id="type" required>
+      {{ class }}: <br />
+      <select name="classes" >
         <option value="" disabled selected>Valitse</option>
-        <option value="Henkilöauto">Henkilöauto</option>
-        <option value="Pakettiauto">Pakettiauto</option>
-        <option value="Kuorma-auto">Kuorma-auto</option>
-        <option value="Polkupyörä">Polkupyörä</option>
+      {% for option in classes[class] %}
+      <option value="{{ class }}:{{ option }}">{{ option }}</option>
+      {% endfor %}
       </select>
     </p>
-    <p>
-      <label for="condition">Valitse kunto:</label> <br />
-
-      <select name="condition" id="condition" required>
-        <option value="" disabled selected>Valitse</option>
-        <option value="Erinomainen">Erinomainen</option>
-        <option value="Hyvä">Hyvä</option>
-        <option value="Kohtalainen">Kohtalainen</option>
-        <option value="Huono">Huono</option>
-      </select>
-    </p>
+    {% endfor %}
     <p>
       Sijainti: <br />
       <input type="text" name="location" size="5" />

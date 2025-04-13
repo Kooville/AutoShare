@@ -43,7 +43,8 @@ def show_item(item_id):
 
 @app.route("/new_item")
 def new_item():
-    return render_template("new_item.html")
+    classes = items.get_all_classes()
+    return render_template("new_item.html", classes=classes)
 
 @app.route("/create_item", methods=["POST"])
 def create_item():
@@ -59,13 +60,10 @@ def create_item():
     user_id = session["user_id"]
 
     classes = []
-    type = request.form["type"]
-    if type:
-        classes.append(("Tyyppi", type))
-    condition = request.form["condition"]
-    if condition:
-        classes.append(("Kunto", condition))
-    print(classes)
+    for entry in request.form.getlist("classes"):
+        if entry:
+            parts = entry.split(":")
+            classes.append((parts[0], parts[1]))
     items.add_item(makeandmodel, location, availability, price, description, user_id, classes)
 
     return redirect("/")

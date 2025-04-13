@@ -6,10 +6,22 @@ def add_item(makeandmodel, location, availability, price, description, user_id, 
     db.execute(sql, [makeandmodel, location, availability, price, description, user_id])
 
     item_id = db.last_insert_id()
-    print(item_id)
+
     sql = "INSERT INTO vehicle_classes (item_id, title, value) VALUES (?, ?, ?)"
     for title, value in classes:
         db.execute(sql, [item_id, title, value])
+
+def get_all_classes():
+    sql = "SELECT title, value FROM classes ORDER BY id"
+    result = db.query(sql)
+
+    classes = {}
+    for title, value in result:
+        classes[title] = []
+    for title, value in result:
+        classes[title].append(value)
+
+    return classes
 
 def get_items():
     sql = "SELECT id, makeandmodel, price, location FROM items ORDER BY id DESC"
