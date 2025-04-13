@@ -18,3 +18,6 @@
     - Ilmoitukseen lisätään ajoneuvon tiedot, tyyppi, sijainti, hinta ja vapaamuotoinen kuvaus
 - Käyttäjä pystyy poistamaan ja muokkaamaan ilmoituksiaan.
 - Sovelluksessa voi hakea kohteita merkin, mallin, sijainnin, tyypin, hinnan ja kuvauksen perusteella.
+- Sovelluksessa on käyttäjäsivut joissa näkyy käyttäjän ilmoitusten määrä, sekä ilmoitukset listattuna.
+- Sovelluksessa on tietokohteille luokkia (tyyppi ja kunto) jotka ovat tallennettuna tietokantaan.
+- Käyttäjä pystyy varaamaan kohteita, sekä näkemään varaukset.
