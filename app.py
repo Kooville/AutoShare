@@ -39,7 +39,8 @@ def show_item(item_id):
     if not item:
         abort(404)
     classes = items.get_classes(item_id)
-    return render_template("show_item.html", item=item, classes=classes)
+    reservations = items.get_item_reservations(item_id)
+    return render_template("show_item.html", item=item, classes=classes, reservations=reservations)
 
 @app.route("/new_item")
 def new_item():
@@ -144,6 +145,37 @@ def remove_item(item_id):
         else:
             return redirect("/item/" + str(item_id))
 
+@app.route("/new_reservation", methods=["POST"])
+def new_reservation():
+    item_id = request.form["item_id"]
+    user_id = session["user_id"]
+    start_date = request.form["start_date"]
+    end_date = request.form["end_date"]
+
+    if start_date > end_date:
+        return "Virhe: Loppupäivä ei voi olla ennen aloituspäivää.", 400
+
+    if items.check_reservations(item_id, start_date, end_date):
+        return "Virhe: Valitsemallasi ajanjaksolla on jo olemassaoleva varaus"
+
+    items.reserve_item(item_id, user_id, start_date, end_date)
+    return redirect("item/" + str(item_id))
+
+@app.route("/remove_reservation/<int:res_id>", methods=["GET", "POST"])
+def remove_reservation(res_id):
+    reservation = db.query("SELECT * FROM reservations WHERE id = ?", [res_id])
+
+    if not reservation:
+        return "Varausta ei löytynyt.", 404
+
+    if reservation[0]["user_id"] != session["user_id"]:
+        return "Ei oikeuksia poistaa tätä varausta.", 403
+
+    if request.method == "POST":
+        items.remove_reservation(res_id)
+        return redirect("/item/" + str(reservation[0]["item_id"]))
+
+    return render_template("remove_reservation.html", reservation=reservation[0])
 
 @app.route("/register")
 def register():

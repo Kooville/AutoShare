@@ -26,3 +26,11 @@ CREATE TABLE vehicle_classes (
     title TEXT,
     value TEXT
 );
+
+CREATE TABLE reservations (
+    id INTEGER PRIMARY KEY,
+    item_id INTEGER REFERENCES items,
+    user_id INTEGER REFERENCES users,
+    start_date TEXT,
+    end_date TEXT
+);

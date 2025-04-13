@@ -29,7 +29,35 @@
     Kuvaus: <br />
     {{ item.description  }}
   </p>
+  <h2>Varaukset:</h2>
+    <ul>
+      {% for res in reservations %}
+        {% if res.user_id == session.user_id %}
+          <li>
+            {{ res.start_date }} – {{ res.end_date }}
+            <a href="/remove_reservation/{{ res.id }}">Poista varaus</a>
+          </li>
+        {% else %}
+          <li>{{ res.start_date }} – {{ res.end_date }}</li>
+        {% endif %}
+      {% endfor %}
+    </ul>
+  {% if session.username %}
+  <h2>Uusi varaus</h2>
+  <form action="/new_reservation" method="post">
+    <label for="start_date">Vuokrauksen aloituspäivä:</label>
+    <input type="date" id="start_date" name="start_date" required>
+    <label for="end_date">Vuokrauksen lopetuspäivä:</label>
+    <input type="date" id="end_date" name="end_date" required>
+
+    <input type="hidden" name="item_id" value="{{  item.id  }}" />
+    <input type="submit" value="Varaa auto">
+  </form>
+  {% else %}
   <p>
+    <a href="/login">Kirjaudu sisään varataksesi</a>
+  </p>
+  {% endif %}
     <a href="/">Takaisin etusivulle</a>
   </p>
 

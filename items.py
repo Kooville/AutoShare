@@ -75,3 +75,29 @@ def find_items(query):
             ORDER BY id DESC"""
     like = "%" + query + "%"
     return db.query(sql, [like, like, like, like, like])
+
+def reserve_item(item_id, user_id, start_date, end_date):
+    sql = "INSERT INTO reservations (item_id, user_id, start_date, end_date) VALUES (?, ?, ?, ?)"
+    db.execute(sql, [item_id, user_id, start_date, end_date])
+
+def check_reservations(item_id, start_date, end_date):
+    sql = """
+        SELECT * FROM reservations
+        WHERE item_id = ?
+        AND (
+            (? BETWEEN start_date AND end_date)
+            OR (? BETWEEN start_date AND end_date)
+            OR (start_date BETWEEN ? AND ?)
+        )
+    """
+    existing = db.query(sql, [item_id, start_date, end_date, start_date, end_date])
+    if existing:
+        return True
+
+def remove_reservation(res_id):
+    sql = "DELETE FROM reservations WHERE id = ?"
+    db.execute(sql, [res_id])
+
+def get_item_reservations(item_id):
+    sql = "SELECT id, user_id, start_date, end_date FROM reservations WHERE item_id = ? ORDER BY start_date"
+    return db.query(sql, [item_id])
