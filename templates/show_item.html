@@ -17,7 +17,7 @@
   <li>Hinta: {{ item.price  }} €/päivä</li>
   <li>Sijainti: {{ item.location  }}</li>
   <li>Vapaana: {{  item.availability  }}</li>
-  <li>Ilmoittaja: {{ item.username  }}</li>
+  <li>Ilmoittaja: <a href="/user/{{ item.user_id }}">{{ item.username  }}</a></li>
   <p>
     Kuvaus: <br />
     {{ item.description  }}
