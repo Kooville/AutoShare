@@ -7,10 +7,16 @@ CREATE TABLE users (
 CREATE TABLE items (
     id INTEGER PRIMARY KEY,
     makeandmodel TEXT,
-    type TEXT,
     location TEXT,
     availability TEXT,
     price INTEGER,
     description TEXT,
     user_id INTEGER REFERENCES users
+);
+
+CREATE TABLE vehicle_classes (
+    id INTEGER PRIMARY KEY,
+    item_id INTEGER REFERENCES items,
+    title TEXT,
+    value TEXT
 );

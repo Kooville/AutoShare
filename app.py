@@ -38,7 +38,8 @@ def show_item(item_id):
     item = items.get_item(item_id)
     if not item:
         abort(404)
-    return render_template("show_item.html", item=item)
+    classes = items.get_classes(item_id)
+    return render_template("show_item.html", item=item, classes=classes)
 
 @app.route("/new_item")
 def new_item():
@@ -49,7 +50,6 @@ def create_item():
     makeandmodel = request.form["make_and_model"]
     if len(makeandmodel) > 50:
         abort(403)
-    type = request.form["type"]
     location = request.form["location"]
     availability = request.form["available"]
     price = request.form["price"]
@@ -58,7 +58,15 @@ def create_item():
     description = request.form["description"]
     user_id = session["user_id"]
 
-    items.add_item(makeandmodel, type, location, availability, price, description, user_id)
+    classes = []
+    type = request.form["type"]
+    if type:
+        classes.append(("Tyyppi", type))
+    condition = request.form["condition"]
+    if condition:
+        classes.append(("Kunto", condition))
+    print(classes)
+    items.add_item(makeandmodel, location, availability, price, description, user_id, classes)
 
     return redirect("/")
 
@@ -90,7 +98,7 @@ def update_item():
         abort(403)
     description = request.form["description"]
 
-    items.update_item(item_id, makeandmodel, type, location, availability, price, description)
+    items.update_item(item_id, makeandmodel, location, availability, price, description)
 
     return redirect("/item/" + str(item_id))
 

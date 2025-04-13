@@ -16,9 +16,22 @@
       <label for="type">Valitse tyyppi:</label> <br />
 
       <select name="type" id="type" required>
+        <option value="" disabled selected>Valitse</option>
         <option value="Henkilöauto">Henkilöauto</option>
         <option value="Pakettiauto">Pakettiauto</option>
         <option value="Kuorma-auto">Kuorma-auto</option>
+        <option value="Polkupyörä">Polkupyörä</option>
+      </select>
+    </p>
+    <p>
+      <label for="condition">Valitse kunto:</label> <br />
+
+      <select name="condition" id="condition" required>
+        <option value="" disabled selected>Valitse</option>
+        <option value="Erinomainen">Erinomainen</option>
+        <option value="Hyvä">Hyvä</option>
+        <option value="Kohtalainen">Kohtalainen</option>
+        <option value="Huono">Huono</option>
       </select>
     </p>
     <p>
