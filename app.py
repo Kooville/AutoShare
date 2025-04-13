@@ -59,11 +59,17 @@ def create_item():
     description = request.form["description"]
     user_id = session["user_id"]
 
+    all_classes = items.get_all_classes()
+
     classes = []
     for entry in request.form.getlist("classes"):
         if entry:
-            parts = entry.split(":")
-            classes.append((parts[0], parts[1]))
+            title, value = entry.split(":")
+            if title not in all_classes:
+                abort(403)
+            if value not in all_classes[title]:
+                abort(403)
+            classes.append((title, value))
     items.add_item(makeandmodel, location, availability, price, description, user_id, classes)
 
     return redirect("/")
@@ -97,11 +103,17 @@ def update_item():
     if len(makeandmodel) > 50:
         abort(403)
     
+    all_classes = items.get_all_classes()
+
     classes = []
     for entry in request.form.getlist("classes"):
         if entry:
-            parts = entry.split(":")
-            classes.append((parts[0], parts[1]))
+            title, value = entry.split(":")
+            if title not in all_classes:
+                abort(403)
+            if value not in all_classes[title]:
+                abort(403)
+            classes.append((title, value))
 
     location = request.form["location"]
     availability = request.form["available"]
