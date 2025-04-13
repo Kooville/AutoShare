@@ -12,15 +12,21 @@
       Ajoneuvon merkki ja malli: <br />
       <input type="text" name="make_and_model" value="{{  item.makeandmodel  }}" maxlength="50" required/>
     </p>
+    {% for class in all_classes %}
     <p>
-      <label for="type">Valitse tyyppi:</label> <br />
-
-      <select name="type" id="type" required>
-        <option value="Henkilöauto">Henkilöauto</option>
-        <option value="Pakettiauto">Pakettiauto</option>
-        <option value="Kuorma-auto">Kuorma-auto</option>
+      {{ class }}: <br />
+      <select name="classes" required>
+        <option value="" disabled>Valitse</option>
+      {% for option in all_classes[class] %}
+        {% if classes[class] == option %}
+        <option value="{{ class }}:{{ option }}" selected>{{ option }}</option>
+        {% else %}
+        <option value="{{ class }}:{{ option }}">{{ option }}</option>
+        {% endif %}
+        {% endfor %}
       </select>
     </p>
+    {% endfor %}
     <p>
       Sijainti: <br />
       <input type="text" name="location" value="{{  item.location  }}" size="5" />

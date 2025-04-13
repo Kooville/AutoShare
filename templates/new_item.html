@@ -15,7 +15,7 @@
     {% for class in classes %}
     <p>
       {{ class }}: <br />
-      <select name="classes" >
+      <select name="classes" required>
         <option value="" disabled selected>Valitse</option>
       {% for option in classes[class] %}
       <option value="{{ class }}:{{ option }}">{{ option }}</option>
