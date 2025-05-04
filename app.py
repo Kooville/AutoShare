@@ -1,6 +1,6 @@
 import sqlite3
 from flask import Flask
-from flask import abort, redirect, render_template, request, session
+from flask import abort, make_response, redirect, render_template, request, session
 import db
 import config
 import items
@@ -16,7 +16,6 @@ def require_login():
         abort(403)
 
 def check_csrf():
-    print("tarkastus toimii")
     if request.form["csrf_token"] != session["csrf_token"]:
         abort(403)
 
@@ -51,6 +50,59 @@ def show_item(item_id):
     classes = items.get_classes(item_id)
     reservations = items.get_item_reservations(item_id)
     return render_template("show_item.html", item=item, classes=classes, reservations=reservations)
+
+@app.route("/add_image/<int:item_id>", methods=["GET", "POST"])
+def add_image(item_id):
+    require_login()
+
+    item = items.get_item(item_id)
+    if not item or item["user_id"] != session["user_id"]:
+        abort(403)
+
+    if request.method == "GET":
+        return render_template("add_image.html", item=item)
+
+    if request.method == "POST":
+        check_csrf()
+        file = request.files["image"]
+        if not file.filename.endswith(".jpg"):
+            return "VIRHE: väärä tiedostomuoto"
+
+        image = file.read()
+        if len(image) > 100 * 1024:
+            return "VIRHE: liian suuri kuva"
+
+        items.update_image(item_id, image)
+        return redirect("/item/" + str(item_id))
+
+@app.route("/remove_image/<int:item_id>", methods=["GET", "POST"])
+def remove_image(item_id):
+    require_login()
+
+    item = items.get_item(item_id)
+    if not item or item["user_id"] != session["user_id"]:
+        abort(403)
+
+
+    if request.method == "GET":
+        return render_template("remove_image.html", item=item)
+
+    if request.method == "POST":
+        check_csrf()
+
+        items.update_image(item_id, None)
+
+        return redirect("/item/" + str(item_id))
+
+@app.route("/image/<int:item_id>")
+def show_image(item_id):
+    image = items.get_image(item_id)
+    if not image:
+        abort(404)
+
+    response = make_response(bytes(image))
+    response.headers.set("Content-Type", "image/jpeg")
+    return response
 
 @app.route("/new_item")
 def new_item():

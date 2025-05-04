@@ -11,6 +11,7 @@ CREATE TABLE items (
     availability TEXT,
     price INTEGER,
     description TEXT,
+    image BLOB,
     user_id INTEGER REFERENCES users
 );
 

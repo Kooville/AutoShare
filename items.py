@@ -11,6 +11,15 @@ def add_item(makeandmodel, location, availability, price, description, user_id, 
     for title, value in classes:
         db.execute(sql, [item_id, title, value])
 
+def update_image(item_id, image):
+    sql = "UPDATE items SET image = ? WHERE id = ?"
+    db.execute(sql, [image, item_id])
+
+def get_image(item_id):
+    sql = "SELECT image FROM items WHERE id = ?"
+    result = db.query(sql, [item_id])
+    return result[0][0] if result else None
+
 def get_all_classes():
     sql = "SELECT title, value FROM classes ORDER BY id"
     result = db.query(sql)
@@ -38,6 +47,7 @@ def get_item(item_id):
                     items.price,
                     items.availability,
                     items.location,
+                    items.image IS NOT NULL has_image,
                     users.username,
                     users.id user_id
             FROM items, users

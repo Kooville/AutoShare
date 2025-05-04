@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Vahvista kuvan poisto</title>
+</head>
+<body>
+  <h1>Oletko varma, että haluat poistaa ajoneuvon {{ item.makeandmodel }} kuvan?</h1>
+  <form action="/remove_image/{{ item.id }}" method="post">
+    <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+    <input type="submit" value="Poista kuva">
+    <a href="/item/{{ item.id }}">Peruuta</a>
+  </form>
+  </form>
+</body>
+</html>

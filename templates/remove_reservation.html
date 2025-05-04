@@ -1,17 +1,17 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Vahvista varauksen poisto</title>
+  <title>Vahvista varauksen poisto</title>
 </head>
 <body>
-    <h1>Oletko varma, että haluat poistaa varauksen?</h1>
-    <p>Alkupäivämäärä: {{ reservation.start_date }}</p>
-    <p>Loppupäivämäärä: {{ reservation.end_date }}</p>
+  <h1>Oletko varma, että haluat poistaa varauksen?</h1>
+  <p>Alkupäivämäärä: {{ reservation.start_date }}</p>
+  <p>Loppupäivämäärä: {{ reservation.end_date }}</p>
     
-    <form action="/remove_reservation/{{ reservation.id }}" method="post">
-        <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />
-        <input type="submit" value="Poista varaus">
-        <a href="/item/{{ reservation.item_id }}">Peruuta</a>
-    </form>
+  <form action="/remove_reservation/{{ reservation.id }}" method="post">
+    <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />
+    <input type="submit" value="Poista varaus">
+    <a href="/item/{{ reservation.item_id }}">Peruuta</a>
+  </form>
 </body>
 </html>
