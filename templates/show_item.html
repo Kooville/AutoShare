@@ -77,6 +77,11 @@
     <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />
     <input type="submit" value="Varaa auto">
   </form>
+  {% for message in get_flashed_messages() %}
+  <p>
+    <b>{{ message }}</b>
+  </p>
+  {% endfor %}
   {% else %}
   <p>
     <a href="/login">Kirjaudu sisään varataksesi</a>

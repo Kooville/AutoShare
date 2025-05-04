@@ -25,7 +25,17 @@
       <input type="password" name="password" required />
     </p>
     <input type="submit" value="Kirjaudu" />
+    {% if next_page %}
+    <input type="hidden" name="next_page" value="{{ next_page }}" />
+    {% else %}
+    <input type="hidden" name="next_page" value="/" />
+    {% endif %}
   </form>
+  {% for message in get_flashed_messages() %}
+  <p>
+    <b>{{ message }}</b>
+  </p>
+  {% endfor %}
   {% endif %}
 </body>
 

@@ -7,6 +7,11 @@
 
 <body>
   <h1>Ilmoituksen muokkaus</h1>
+  {% for message in get_flashed_messages() %}
+  <p>
+    <b>{{ message }}</b>
+  </p>
+  {% endfor %}
   <form action="/update_item" method="post">
     <p>
       <label for="make_and_model">Merkki ja malli</label>:<br />

@@ -21,6 +21,11 @@
     </p>
     <input type="submit" value="Luo tunnus" />
   </form>
+  {% for message in get_flashed_messages() %}
+  <p>
+    <b>{{ message }}</b>
+  </p>
+  {% endfor %}
 </body>
 
 </html>

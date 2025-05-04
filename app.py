@@ -2,7 +2,7 @@ import sqlite3
 import re
 import secrets
 from flask import Flask
-from flask import abort, make_response, redirect, render_template, request, session
+from flask import abort, make_response, redirect, render_template, request, session, flash
 import db
 import config
 import items
@@ -67,11 +67,13 @@ def add_image(item_id):
         check_csrf()
         file = request.files["image"]
         if not file.filename.endswith(".jpg"):
-            return "VIRHE: väärä tiedostomuoto"
+            flash("VIRHE: Lähettämäsi tiedosto ei ole jpg-tiedosto")
+            return redirect("/add_image/" + str(item_id))
 
         image = file.read()
         if len(image) > 100 * 1024:
-            return "VIRHE: liian suuri kuva"
+            flash("VIRHE: Lähettämäsi tiedosto on liian suuri")
+            return redirect("/add_image/" + str(item_id))
 
         items.update_image(item_id, image)
         return redirect("/item/" + str(item_id))
@@ -117,22 +119,28 @@ def create_item():
 
     makeandmodel = request.form["make_and_model"]
     if len(makeandmodel) > 50 or len(makeandmodel) == 0:
-        abort(403)
+        flash("VIRHE: Virheellinen syöte")
+        return redirect("/new_item/")
 
     location = request.form["location"]
-    if len(location) == 0:
-        abort(403)
+    if len(location) > 50 or len(location) == 0:
+        flash("VIRHE: Virheellinen syöte")
+        return redirect("/new_item/")
 
     availability_start = request.form["availability_start"]
     availability_end = request.form["availability_end"]
     if len(availability_start) == 0 or len(availability_end) == 0:
-        abort(403)
+        flash("VIRHE: Virheellinen syöte")
+        return redirect("/new_item/")
+
     if availability_end < availability_start:
-        return "Virhe: Loppupäivä ei voi olla ennen aloituspäivää.", 400
+        flash("VIRHE: Virheellinen syöte")
+        return redirect("/new_item/")
 
     price = request.form["price"]
-    if not re.search("^[1-9][0-9]{0,4}$", price):
-        abort(403)
+    if not re.search("^[1-9][0-9]{0,4}$", price) or len(price) == 0:
+        flash("VIRHE: Virheellinen syöte")
+        return redirect("/new_item/")
 
     description = request.form["description"]
     user_id = session["user_id"]
@@ -140,13 +148,16 @@ def create_item():
     all_classes = items.get_all_classes()
 
     classes = []
+
     for entry in request.form.getlist("classes"):
         if entry:
             title, value = entry.split(":")
             if title not in all_classes:
-                abort(403)
+                flash("VIRHE: Virheellinen syöte")
+                return redirect("/new_item/")
             if value not in all_classes[title]:
-                abort(403)
+                flash("VIRHE: Virheellinen syöte")
+                return redirect("/new_item/")
             classes.append((title, value))
     items.add_item(makeandmodel, location, availability_start, 
                    availability_end, price, description, user_id, classes)
@@ -177,13 +188,20 @@ def update_item():
     check_csrf()
     item_id = request.form["item_id"]
     item = items.get_item(item_id)
+
     if not item:
-        abort(404)
+        flash("VIRHE: Ajoneuvoa ei löydy")
+        return redirect("/edit_item/" + str(item_id))
+
     if item["user_id"] != session["user_id"]:
-        abort(403)
+        flash("VIRHE: Virheellinen syöte")
+        return redirect("/edit_item/" + str(item_id))
+
     makeandmodel = request.form["make_and_model"]
+
     if len(makeandmodel) > 50 or len(makeandmodel) == 0:
-        abort(403)
+        flash("VIRHE: Virheellinen syöte")
+        return redirect("/edit_item/" + str(item_id))
 
     all_classes = items.get_all_classes()
 
@@ -192,25 +210,35 @@ def update_item():
         if entry:
             title, value = entry.split(":")
             if title not in all_classes:
-                abort(403)
+                flash("VIRHE: Virheellinen syöte")
+                return redirect("/edit_item/" + str(item_id))
+
             if value not in all_classes[title]:
-                abort(403)
+                flash("VIRHE: Virheellinen syöte")
+                return redirect("/edit_item/" + str(item_id))
+
             classes.append((title, value))
 
     location = request.form["location"]
-    if len(location) == 0:
-        abort(403)
+    if len(location) > 50 or len(location) == 0:
+        flash("VIRHE: Virheellinen syöte")
+        return redirect("/edit_item/" + str(item_id))
 
     availability_start = request.form["availability_start"]
     availability_end = request.form["availability_end"]
+
     if len(availability_start) == 0 or len(availability_end) == 0:
-        abort(403)
+        flash("VIRHE: Virheellinen syöte")
+        return redirect("/edit_item/" + str(item_id))
+
     if availability_end < availability_start:
-        return "Virhe: Loppupäivä ei voi olla ennen aloituspäivää.", 400
+        flash("VIRHE: Virheellinen syöte")
+        return redirect("/edit_item/" + str(item_id))
 
     price = request.form["price"]
-    if not re.search("^[1-9][0-9]{0,4}$", price):
-        abort(403)
+    if not re.search("^[1-9][0-9]{0,4}$", price) or len(location) == 0:
+        flash("VIRHE: Virheellinen syöte")
+        return redirect("/edit_item/" + str(item_id))
 
     description = request.form["description"]
 
@@ -251,13 +279,16 @@ def new_reservation():
     availability_end = item["availability_end"]
 
     if start_date < availability_start or end_date > availability_end:
-        return "Virhe: Kohde ei ole saatavilla valitsemanasi aikana.", 400
+        flash("VIRHE: Kohde ei ole saatavilla valitsemanasi aikana.")
+        return redirect("item/" + str(item_id))
 
     if start_date > end_date:
-        return "Virhe: Loppupäivä ei voi olla ennen aloituspäivää.", 400
+        flash("VIRHE: Loppupäivä ei voi olla ennen aloituspäivää.")
+        return redirect("item/" + str(item_id))
 
     if items.check_reservations(item_id, start_date, end_date):
-        return "Virhe: Valitsemallasi ajanjaksolla on jo olemassaoleva varaus"
+        flash("Virhe: Valitsemallasi ajanjaksolla on jo olemassaoleva varaus")
+        return redirect("item/" + str(item_id))
 
     items.reserve_item(item_id, user_id, start_date, end_date)
     return redirect("item/" + str(item_id))
@@ -288,17 +319,21 @@ def register():
 def create():
     username = request.form["username"]
     if len(username) == 0 or len(username) > 50:
-        abort(403)
+        flash("VIRHE: Käyttäjätunnuksen pituus ei voi olla 0")
+        return redirect("/register")
     password1 = request.form["password1"]
     if len(password1) == 0:
-        abort(403)
+        flash("VIRHE: Salasanan pituus ei voi olla 0")
+        return redirect("/register")
     password2 = request.form["password2"]
     if password1 != password2:
-        return "VIRHE: salasanat eivät ole samat"
+        flash("VIRHE: Salasanat eivät ole samat")
+        return redirect("/register")
     try:
         users.create_user(username, password1)
     except sqlite3.IntegrityError:
-        return "VIRHE: tunnus on jo varattu"
+        flash("VIRHE: Tunnus on jo varattu")
+        return redirect("/register")
 
     return redirect("/registered")
 
@@ -309,18 +344,22 @@ def registered():
 @app.route("/login", methods=["GET","POST"])
 def login():
     if request.method == "GET":
-        return render_template("login.html")
+        return render_template("login.html", next_page=request.referrer)
     if request.method == "POST":
         username = request.form["username"]
         password = request.form["password"]
+        next_page = request.form["next_page"]
+
         user_id = users.check_login(username, password)
 
         if user_id:
             session["user_id"] = user_id
             session["username"] = username
             session["csrf_token"] = secrets.token_hex(16)
-            return redirect("/")
-        return "VIRHE: väärä tunnus tai salasana"
+            return redirect(next_page)
+        else:
+            flash("VIRHE: Väärä tunnus tai salasana")
+            return render_template("login.html", next_page=next_page)
 
 @app.route("/logout")
 def logout():
