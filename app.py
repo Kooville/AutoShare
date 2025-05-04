@@ -10,6 +10,10 @@ import re
 app = Flask(__name__)
 app.secret_key = config.secret_key
 
+def require_login():
+    if "user_id" not in session:
+        abort(403)
+
 @app.route("/")
 def index():
     all_items = items.get_items()
@@ -44,11 +48,13 @@ def show_item(item_id):
 
 @app.route("/new_item")
 def new_item():
+    require_login()
     classes = items.get_all_classes()
     return render_template("new_item.html", classes=classes)
 
 @app.route("/create_item", methods=["POST"])
 def create_item():
+    require_login()
     makeandmodel = request.form["make_and_model"]
     if len(makeandmodel) > 50:
         abort(403)
@@ -77,6 +83,7 @@ def create_item():
 
 @app.route("/edit_item/<int:item_id>")
 def edit_item(item_id):
+    require_login()
     item = items.get_item(item_id)
     if not item:
         abort(404)
@@ -94,6 +101,7 @@ def edit_item(item_id):
 
 @app.route("/update_item", methods=["POST"])
 def update_item():
+    require_login()
     item_id = request.form["item_id"]
     item = items.get_item(item_id)
     if not item:
@@ -130,6 +138,7 @@ def update_item():
 
 @app.route("/remove_item/<int:item_id>", methods=["GET", "POST"])
 def remove_item(item_id):
+    require_login()
     item = items.get_item(item_id)
     if not item:
         abort(404)
@@ -147,6 +156,7 @@ def remove_item(item_id):
 
 @app.route("/new_reservation", methods=["POST"])
 def new_reservation():
+    require_login()
     item_id = request.form["item_id"]
     user_id = session["user_id"]
     start_date = request.form["start_date"]
@@ -163,6 +173,7 @@ def new_reservation():
 
 @app.route("/remove_reservation/<int:res_id>", methods=["GET", "POST"])
 def remove_reservation(res_id):
+    require_login()
     reservation = db.query("SELECT * FROM reservations WHERE id = ?", [res_id])
 
     if not reservation:

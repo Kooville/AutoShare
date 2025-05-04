@@ -25,7 +25,7 @@
     {% endfor %}
     <p>
       Sijainti: <br />
-      <input type="text" name="location" size="5" />
+      <input type="text" name="location" size="5" required/>
     </p>
     <p>
       Vapaat ajat: <br />
@@ -37,7 +37,7 @@
     </p>
     <p>
       Lisätietoja: <br />
-      <textarea name="description" rows="8" cols="60">Kerro tähän vapaasti lisätietoja ajoneuvosta ja ehdoistasi</textarea>
+      <textarea name="description" rows="8" cols="60" placeholder="Kerro tähän vapaasti lisätietoja ajoneuvosta ja ehdoistasi"></textarea>
     </p>
     <input type="submit" value="Luo ilmoitus" />
   </form>
