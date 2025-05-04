@@ -32,8 +32,14 @@
       <input type="text" name="location" value="{{  item.location  }}" size="5" />
     </p>
     <p>
-      Vapaat ajat: <br />
-      <input type="text" name="available" value="{{  item.availability  }}" />
+      <p>
+        Vapaat ajat: <br />
+        <label for="availability_start">Saatavilla alkaen:</label>
+        <input type="date" name="availability_start" value="{{ item.availability_start }}" required>
+
+        <label for="availability_end">Saatavilla asti:</label>
+        <input type="date" name="availability_end" value="{{ item.availability_end }}" required>
+      </p>
     </p>
     <p>
       Hinta: <br />

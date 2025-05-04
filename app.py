@@ -114,16 +114,26 @@ def new_item():
 def create_item():
     require_login()
     check_csrf()
+
     makeandmodel = request.form["make_and_model"]
     if len(makeandmodel) > 50 or len(makeandmodel) == 0:
         abort(403)
+
     location = request.form["location"]
     if len(location) == 0:
         abort(403)
-    availability = request.form["available"]
+
+    availability_start = request.form["availability_start"]
+    availability_end = request.form["availability_end"]
+    if len(availability_start) == 0 or len(availability_end) == 0:
+        abort(403)
+    if availability_end < availability_start:
+        return "Virhe: Loppupäivä ei voi olla ennen aloituspäivää.", 400
+
     price = request.form["price"]
     if not re.search("^[1-9][0-9]{0,4}$", price):
         abort(403)
+
     description = request.form["description"]
     user_id = session["user_id"]
 
@@ -138,7 +148,7 @@ def create_item():
             if value not in all_classes[title]:
                 abort(403)
             classes.append((title, value))
-    items.add_item(makeandmodel, location, availability, price, description, user_id, classes)
+    items.add_item(makeandmodel, location, availability_start, availability_end, price, description, user_id, classes)
 
     return redirect("/")
 
@@ -189,14 +199,21 @@ def update_item():
     location = request.form["location"]
     if len(location) == 0:
         abort(403)
-    availability = request.form["available"]
+
+    availability_start = request.form["availability_start"]
+    availability_end = request.form["availability_end"]
+    if len(availability_start) == 0 or len(availability_end) == 0:
+        abort(403)
+    if availability_end < availability_start:
+        return "Virhe: Loppupäivä ei voi olla ennen aloituspäivää.", 400
+
     price = request.form["price"]
     if not re.search("^[1-9][0-9]{0,4}$", price):
         abort(403)
 
     description = request.form["description"]
 
-    items.update_item(item_id, makeandmodel, location, availability, price, description, classes)
+    items.update_item(item_id, makeandmodel, location, availability_start, availability_end, price, description, classes)
 
     return redirect("/item/" + str(item_id))
 
@@ -227,6 +244,13 @@ def new_reservation():
     user_id = session["user_id"]
     start_date = request.form["start_date"]
     end_date = request.form["end_date"]
+    item = items.get_item(item_id)
+
+    availability_start = item["availability_start"]
+    availability_end = item["availability_end"]
+
+    if start_date < availability_start or end_date > availability_end:
+        return "Virhe: Kohde ei ole saatavilla valitsemanasi aikana.", 400
 
     if start_date > end_date:
         return "Virhe: Loppupäivä ei voi olla ennen aloituspäivää.", 400

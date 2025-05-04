@@ -1,9 +1,9 @@
 import db
 
-def add_item(makeandmodel, location, availability, price, description, user_id, classes):
-    sql = """INSERT INTO items (makeandmodel, location, availability, price, description, user_id) 
-            VALUES (?, ?, ?, ?, ?, ?)"""
-    db.execute(sql, [makeandmodel, location, availability, price, description, user_id])
+def add_item(makeandmodel, location, availability_start, availability_end, price, description, user_id, classes):
+    sql = """INSERT INTO items (makeandmodel, location, availability_start, availability_end, price, description, user_id) 
+            VALUES (?, ?, ?, ?, ?, ?, ?)"""
+    db.execute(sql, [makeandmodel, location, availability_start, availability_end, price, description, user_id])
 
     item_id = db.last_insert_id()
 
@@ -45,7 +45,8 @@ def get_item(item_id):
                     items.makeandmodel,
                     items.description,
                     items.price,
-                    items.availability,
+                    items.availability_start,
+                    items.availability_end,
                     items.location,
                     items.image IS NOT NULL has_image,
                     users.username,
@@ -56,14 +57,15 @@ def get_item(item_id):
     results = db.query(sql, [item_id])
     return results[0] if results else None
 
-def update_item(item_id, makeandmodel, location, availability, price, description, classes):
+def update_item(item_id, makeandmodel, location, availability_start, availability_end, price, description, classes):
     sql = """UPDATE items SET makeandmodel = ?,
                               location = ?,
-                              availability = ?,
+                              availability_start = ?,
+                              availability_end = ?,
                               price = ?,
                               description = ?
                           WHERE id = ?"""
-    db.execute(sql, [makeandmodel, location, availability, price, description, item_id])
+    db.execute(sql, [makeandmodel, location, availability_start, availability_end, price, description, item_id])
 
     sql = "DELETE FROM vehicle_classes WHERE item_id = ?"
     db.execute(sql, [item_id])
@@ -81,10 +83,10 @@ def remove_item(item_id):
 def find_items(query):
     sql = """SELECT id, makeandmodel
             FROM items
-            WHERE makeandmodel LIKE ? OR description LIKE ? OR location LIKE ? or price LIKE ? or availability LIKE ?
+            WHERE makeandmodel LIKE ? OR description LIKE ? OR location LIKE ? or price LIKE ?
             ORDER BY id DESC"""
     like = "%" + query + "%"
-    return db.query(sql, [like, like, like, like, like])
+    return db.query(sql, [like, like, like, like])
 
 def reserve_item(item_id, user_id, start_date, end_date):
     sql = "INSERT INTO reservations (item_id, user_id, start_date, end_date) VALUES (?, ?, ?, ?)"
