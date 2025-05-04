@@ -1,9 +1,12 @@
 import db
 
-def add_item(makeandmodel, location, availability_start, availability_end, price, description, user_id, classes):
-    sql = """INSERT INTO items (makeandmodel, location, availability_start, availability_end, price, description, user_id) 
+def add_item(makeandmodel, location, availability_start,
+            availability_end, price, description, user_id, classes):
+    sql = """INSERT INTO items (makeandmodel, location, availability_start,
+                                availability_end, price, description, user_id) 
             VALUES (?, ?, ?, ?, ?, ?, ?)"""
-    db.execute(sql, [makeandmodel, location, availability_start, availability_end, price, description, user_id])
+    db.execute(sql, [makeandmodel, location, availability_start,
+                    availability_end, price, description, user_id])
 
     item_id = db.last_insert_id()
 
@@ -57,7 +60,8 @@ def get_item(item_id):
     results = db.query(sql, [item_id])
     return results[0] if results else None
 
-def update_item(item_id, makeandmodel, location, availability_start, availability_end, price, description, classes):
+def update_item(item_id, makeandmodel, location, availability_start,
+                availability_end, price, description, classes):
     sql = """UPDATE items SET makeandmodel = ?,
                               location = ?,
                               availability_start = ?,
@@ -65,7 +69,8 @@ def update_item(item_id, makeandmodel, location, availability_start, availabilit
                               price = ?,
                               description = ?
                           WHERE id = ?"""
-    db.execute(sql, [makeandmodel, location, availability_start, availability_end, price, description, item_id])
+    db.execute(sql, [makeandmodel, location, availability_start,
+                    availability_end, price, description, item_id])
 
     sql = "DELETE FROM vehicle_classes WHERE item_id = ?"
     db.execute(sql, [item_id])
@@ -111,5 +116,7 @@ def remove_reservation(res_id):
     db.execute(sql, [res_id])
 
 def get_item_reservations(item_id):
-    sql = "SELECT id, user_id, start_date, end_date FROM reservations WHERE item_id = ? ORDER BY start_date"
+    sql = """SELECT id, user_id, start_date, end_date
+             FROM reservations WHERE item_id = ?
+             ORDER BY start_date"""
     return db.query(sql, [item_id])

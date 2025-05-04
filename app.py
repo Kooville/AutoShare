@@ -1,12 +1,13 @@
 import sqlite3
+import re
+import secrets
 from flask import Flask
 from flask import abort, make_response, redirect, render_template, request, session
 import db
 import config
 import items
 import users
-import re
-import secrets
+
 
 app = Flask(__name__)
 app.secret_key = config.secret_key
@@ -83,7 +84,6 @@ def remove_image(item_id):
     if not item or item["user_id"] != session["user_id"]:
         abort(403)
 
-
     if request.method == "GET":
         return render_template("remove_image.html", item=item)
 
@@ -148,7 +148,8 @@ def create_item():
             if value not in all_classes[title]:
                 abort(403)
             classes.append((title, value))
-    items.add_item(makeandmodel, location, availability_start, availability_end, price, description, user_id, classes)
+    items.add_item(makeandmodel, location, availability_start, 
+                   availability_end, price, description, user_id, classes)
 
     return redirect("/")
 
@@ -183,7 +184,7 @@ def update_item():
     makeandmodel = request.form["make_and_model"]
     if len(makeandmodel) > 50 or len(makeandmodel) == 0:
         abort(403)
-    
+
     all_classes = items.get_all_classes()
 
     classes = []
@@ -213,7 +214,8 @@ def update_item():
 
     description = request.form["description"]
 
-    items.update_item(item_id, makeandmodel, location, availability_start, availability_end, price, description, classes)
+    items.update_item(item_id, makeandmodel, location, availability_start,
+                      availability_end, price, description, classes)
 
     return redirect("/item/" + str(item_id))
 
@@ -233,8 +235,7 @@ def remove_item(item_id):
         if "remove" in request.form:
             items.remove_item(item_id)
             return redirect("/")
-        else:
-            return redirect("/item/" + str(item_id))
+        return redirect("/item/" + str(item_id))
 
 @app.route("/new_reservation", methods=["POST"])
 def new_reservation():
@@ -319,12 +320,12 @@ def login():
             session["username"] = username
             session["csrf_token"] = secrets.token_hex(16)
             return redirect("/")
-        else:
-            return "VIRHE: väärä tunnus tai salasana"
+        return "VIRHE: väärä tunnus tai salasana"
 
 @app.route("/logout")
 def logout():
     del session["user_id"]
     del session["username"]
     del session["csrf_token"]
+
     return redirect("/")
