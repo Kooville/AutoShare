@@ -17,11 +17,11 @@
   <h1>Kirjautuminen</h1>
   <form action="/login" method="post">
     <p>
-      Tunnus: <br />
-      <input type="text" name="username" required />
+      <label for="username">Käyttäjätunnus</label>: <br />
+      <input type="text" id="username" name="username" required />
     </p>
     <p>
-      Salasana: <br />
+      <label for="password">Salasana</label>: <br />
       <input type="password" name="password" required />
     </p>
     <input type="submit" value="Kirjaudu" />

@@ -28,7 +28,7 @@
   {% endif %}
   {% if item.has_image %}
   <p>
-    <img src="/image/{{ item.id }}" />
+    <img src="/image/{{ item.id }}" alt="Ajoneuvon {{ item.makeandmodel }} kuva"/>
   </p>
     {% if item.user_id == session.user_id %}
       <a href="/remove_image/{{ item.id }}">Poista kuva</a>
@@ -50,7 +50,7 @@
   </p>
   <p>
     Kuvaus: <br />
-    {{ item.description  }}
+    {{ item.description.replace('\n', '<br>') | safe }}
   </p>
   <h2>Varaukset:</h2>
     <ul>
