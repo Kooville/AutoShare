@@ -51,6 +51,7 @@
     <input type="date" id="end_date" name="end_date" required>
 
     <input type="hidden" name="item_id" value="{{  item.id  }}" />
+    <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />
     <input type="submit" value="Varaa auto">
   </form>
   {% else %}

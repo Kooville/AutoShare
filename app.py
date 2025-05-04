@@ -6,12 +6,18 @@ import config
 import items
 import users
 import re
+import secrets
 
 app = Flask(__name__)
 app.secret_key = config.secret_key
 
 def require_login():
     if "user_id" not in session:
+        abort(403)
+
+def check_csrf():
+    print("tarkastus toimii")
+    if request.form["csrf_token"] != session["csrf_token"]:
         abort(403)
 
 @app.route("/")
@@ -55,10 +61,13 @@ def new_item():
 @app.route("/create_item", methods=["POST"])
 def create_item():
     require_login()
+    check_csrf()
     makeandmodel = request.form["make_and_model"]
-    if len(makeandmodel) > 50:
+    if len(makeandmodel) > 50 or len(makeandmodel) == 0:
         abort(403)
     location = request.form["location"]
+    if len(location) == 0:
+        abort(403)
     availability = request.form["available"]
     price = request.form["price"]
     if not re.search("^[1-9][0-9]{0,4}$", price):
@@ -102,6 +111,7 @@ def edit_item(item_id):
 @app.route("/update_item", methods=["POST"])
 def update_item():
     require_login()
+    check_csrf()
     item_id = request.form["item_id"]
     item = items.get_item(item_id)
     if not item:
@@ -109,7 +119,7 @@ def update_item():
     if item["user_id"] != session["user_id"]:
         abort(403)
     makeandmodel = request.form["make_and_model"]
-    if len(makeandmodel) > 50:
+    if len(makeandmodel) > 50 or len(makeandmodel) == 0:
         abort(403)
     
     all_classes = items.get_all_classes()
@@ -125,6 +135,8 @@ def update_item():
             classes.append((title, value))
 
     location = request.form["location"]
+    if len(location) == 0:
+        abort(403)
     availability = request.form["available"]
     price = request.form["price"]
     if not re.search("^[1-9][0-9]{0,4}$", price):
@@ -148,6 +160,7 @@ def remove_item(item_id):
     if request.method == "GET":
         return render_template("remove_item.html", item=item)
     if request.method == "POST":
+        check_csrf()
         if "remove" in request.form:
             items.remove_item(item_id)
             return redirect("/")
@@ -157,6 +170,7 @@ def remove_item(item_id):
 @app.route("/new_reservation", methods=["POST"])
 def new_reservation():
     require_login()
+    check_csrf()
     item_id = request.form["item_id"]
     user_id = session["user_id"]
     start_date = request.form["start_date"]
@@ -183,6 +197,7 @@ def remove_reservation(res_id):
         return "Ei oikeuksia poistaa tätä varausta.", 403
 
     if request.method == "POST":
+        check_csrf()
         items.remove_reservation(res_id)
         return redirect("/item/" + str(reservation[0]["item_id"]))
 
@@ -195,7 +210,11 @@ def register():
 @app.route("/create", methods=["POST"])
 def create():
     username = request.form["username"]
+    if len(username) == 0 or len(username) > 50:
+        abort(403)
     password1 = request.form["password1"]
+    if len(password1) == 0:
+        abort(403)
     password2 = request.form["password2"]
     if password1 != password2:
         return "VIRHE: salasanat eivät ole samat"
@@ -222,6 +241,7 @@ def login():
         if user_id:
             session["user_id"] = user_id
             session["username"] = username
+            session["csrf_token"] = secrets.token_hex(16)
             return redirect("/")
         else:
             return "VIRHE: väärä tunnus tai salasana"
@@ -230,4 +250,5 @@ def login():
 def logout():
     del session["user_id"]
     del session["username"]
+    del session["csrf_token"]
     return redirect("/")

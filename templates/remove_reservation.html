@@ -9,6 +9,7 @@
     <p>Loppupäivämäärä: {{ reservation.end_date }}</p>
     
     <form action="/remove_reservation/{{ reservation.id }}" method="post">
+        <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />
         <input type="submit" value="Poista varaus">
         <a href="/item/{{ reservation.item_id }}">Peruuta</a>
     </form>
